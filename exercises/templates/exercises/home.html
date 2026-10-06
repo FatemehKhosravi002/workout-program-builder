@@ -1,0 +1,1759 @@
+<!DOCTYPE html>
+<html lang="fa" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>ساخت برنامه تمرینی</title>
+
+    <style>
+        * {
+            box-sizing: border-box;
+        }
+
+        body {
+            margin: 0;
+            background: #f5f6f8;
+            font-family: Arial, sans-serif;
+            color: #222;
+        }
+
+        .container {
+            width: min(1100px, 94%);
+            margin: 30px auto;
+        }
+
+        .card {
+            background: #fff;
+            border-radius: 18px;
+            padding: 22px;
+            margin-bottom: 20px;
+            box-shadow: 0 5px 20px rgba(0, 0, 0, 0.06);
+        }
+
+        h1,
+        h2,
+        h3 {
+            margin-top: 0;
+        }
+
+        input,
+        select,
+        button {
+            font-family: inherit;
+        }
+
+        input,
+        select {
+            width: 100%;
+            padding: 12px 14px;
+            border: 1px solid #ddd;
+            border-radius: 10px;
+            outline: none;
+            font-size: 14px;
+            background: #fff;
+        }
+
+        input:focus,
+        select:focus {
+            border-color: #777;
+        }
+
+        button {
+            border: none;
+            cursor: pointer;
+        }
+
+        .form-row {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 15px;
+        }
+
+        .form-group {
+            margin-bottom: 16px;
+        }
+
+        .form-group label {
+            display: block;
+            margin-bottom: 7px;
+            font-size: 14px;
+            font-weight: bold;
+        }
+
+        /* Categories */
+
+        .categories {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 8px;
+        }
+
+        .category-btn {
+            padding: 9px 15px;
+            border-radius: 20px;
+            background: #f0f1f3;
+            color: #333;
+            font-size: 14px;
+        }
+
+        .category-btn:hover {
+            background: #e3e4e7;
+        }
+
+        .category-btn.active {
+            background: #222;
+            color: white;
+        }
+
+        /* Search */
+
+        #search-wrapper {
+            display: none;
+            margin-top: 18px;
+        }
+
+        /* Exercise list */
+
+        #exercise-list {
+            margin-top: 15px;
+        }
+
+        .exercise-row {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: 10px;
+            padding: 12px 0;
+            border-bottom: 1px solid #eee;
+        }
+
+        .exercise-name {
+            font-size: 15px;
+        }
+
+        .add-exercise-btn {
+            width: 36px;
+            height: 36px;
+            border-radius: 50%;
+            background: #222;
+            color: white;
+            font-size: 20px;
+            flex-shrink: 0;
+        }
+
+        .add-exercise-btn:hover {
+            background: #444;
+        }
+
+        /* Superset */
+
+        .superset-toolbar {
+            margin-top: 18px;
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            flex-wrap: wrap;
+        }
+
+        .superset-btn {
+            padding: 10px 16px;
+            border-radius: 10px;
+            background: #eee;
+            color: #222;
+            font-size: 14px;
+        }
+
+        .superset-btn.active {
+            background: #222;
+            color: white;
+        }
+
+        #superset-message {
+            font-size: 13px;
+            color: #666;
+        }
+
+        /* Days */
+
+        .day-buttons {
+            display: flex;
+            gap: 8px;
+            flex-wrap: wrap;
+            margin-bottom: 20px;
+        }
+
+        .day-btn {
+            padding: 10px 18px;
+            border-radius: 10px;
+            background: #eee;
+        }
+
+        .day-btn.active {
+            background: #222;
+            color: white;
+        }
+
+        /* Program */
+
+        .program-exercise {
+            border: 1px solid #e5e5e5;
+            border-radius: 14px;
+            padding: 15px;
+            margin-bottom: 12px;
+            background: #fff;
+        }
+
+        .program-exercise-top {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: 10px;
+            margin-bottom: 12px;
+        }
+
+        .program-exercise-name {
+            font-weight: bold;
+            font-size: 15px;
+            overflow-wrap: anywhere;
+        }
+
+        .remove-exercise-btn {
+            background: transparent;
+            color: #d33;
+            font-size: 13px;
+            padding: 5px;
+        }
+
+        .program-fields {
+            display: grid;
+            grid-template-columns: 0.85fr 1.15fr;
+            gap: 9px;
+        }
+
+        .program-fields input {
+            min-width: 0;
+        }
+
+        .program-note {
+            margin-top: 9px;
+        }
+
+        /* Preview */
+
+        .preview-content {
+            width: 100%;
+            max-width: none;
+        }
+
+        .preview-day {
+            width: 100%;
+            margin-bottom: 28px;
+        }
+
+        .preview-day-title {
+            margin-bottom: 12px;
+        }
+
+        .preview-exercise {
+            width: 100%;
+            padding: 14px 16px;
+            margin-bottom: 10px;
+            border: 1px solid #e5e5e5;
+            border-radius: 12px;
+            background: #fff;
+        }
+
+        .preview-exercise-name {
+            width: 100%;
+            font-size: 15px;
+            font-weight: 600;
+            margin-bottom: 10px;
+            overflow-wrap: anywhere;
+        }
+
+        .preview-exercise-details {
+            width: 100%;
+            display: grid;
+            grid-template-columns: 1fr 1fr 1fr;
+            gap: 10px;
+        }
+
+        .preview-exercise-details span {
+            min-width: 0;
+            width: 100%;
+            padding: 10px 12px;
+            border: 1px solid #e8e8e8;
+            border-radius: 8px;
+            background: #fafafa;
+            white-space: normal;
+            overflow-wrap: anywhere;
+            font-size: 13px;
+        }
+
+        /* PDF */
+
+        #pdf-btn {
+            width: 100%;
+            padding: 14px;
+            border-radius: 12px;
+            background: #222;
+            color: white;
+            font-size: 15px;
+        }
+
+        #pdf-btn:hover {
+            background: #444;
+        }
+
+        /* Admin */
+
+        .admin-form {
+            display: grid;
+            gap: 10px;
+            margin-bottom: 20px;
+        }
+
+        .admin-form button {
+            padding: 12px;
+            border-radius: 10px;
+            background: #222;
+            color: white;
+        }
+
+        /* Mobile */
+
+        @media (max-width: 600px) {
+            .container {
+                width: 94%;
+                margin: 18px auto;
+            }
+
+            .card {
+                padding: 16px;
+                border-radius: 14px;
+            }
+
+            .form-row {
+                grid-template-columns: 1fr;
+            }
+
+            .preview-exercise-details {
+                grid-template-columns: 1fr;
+            }
+        }
+
+        @media (max-width: 500px) {
+            .program-fields {
+                grid-template-columns: 1fr;
+            }
+        }
+
+        @media (max-width: 380px) {
+            .program-fields {
+                grid-template-columns: 1fr;
+            }
+        }
+    </style>
+</head>
+
+<body>
+
+<div class="container">
+
+    <!-- اطلاعات ورزشکار -->
+    <div class="card">
+        <h1>ساخت برنامه تمرینی</h1>
+
+        <div class="form-row">
+
+            <div class="form-group">
+                <label for="athlete-name">نام ورزشکار</label>
+                <input
+                    type="text"
+                    id="athlete-name"
+                    placeholder="مثلاً بهار"
+                >
+            </div>
+
+            <div class="form-group">
+                <label for="number-of-days">تعداد روزهای تمرین</label>
+
+                <select id="number-of-days">
+                    <option value="2">۲ روز</option>
+                    <option value="3">۳ روز</option>
+                </select>
+            </div>
+
+        </div>
+    </div>
+
+
+    <!-- انتخاب حرکت -->
+    <div class="card">
+
+        <h2>انتخاب تمرین</h2>
+
+        <div class="form-group">
+            <label>دسته‌بندی</label>
+
+            <div id="categories" class="categories"></div>
+        </div>
+
+
+        <div id="search-wrapper">
+            <input
+                type="text"
+                id="exercise-search"
+                placeholder="جستجوی حرکت..."
+            >
+        </div>
+
+
+        <div class="superset-toolbar">
+
+            <button
+                type="button"
+                id="superset-btn"
+                class="superset-btn"
+            >
+                + ساخت سوپرست
+            </button>
+
+            <span id="superset-message"></span>
+
+        </div>
+
+
+        <div id="exercise-list"></div>
+
+    </div>
+
+
+    <!-- برنامه -->
+    <div class="card">
+
+        <h2>برنامه تمرینی</h2>
+
+        <div
+            id="day-buttons"
+            class="day-buttons"
+        ></div>
+
+        <div id="program-list"></div>
+
+    </div>
+
+
+    <!-- پیش نمایش -->
+    <div class="card">
+
+        <h2>پیش‌نمایش برنامه</h2>
+
+        <div
+            id="preview-content"
+            class="preview-content"
+        ></div>
+
+    </div>
+
+
+    <!-- PDF -->
+    <div class="card">
+
+        <button
+            type="button"
+            id="pdf-btn"
+        >
+            دریافت برنامه PDF
+        </button>
+
+    </div>
+
+
+    <!-- مدیریت -->
+    <div class="card">
+
+        <h2>مدیریت تمرین‌ها</h2>
+
+        <h3>افزودن دسته‌بندی</h3>
+
+        <form
+            id="category-form"
+            class="admin-form"
+        >
+
+            <input
+                type="text"
+                id="new-category-name"
+                placeholder="نام دسته‌بندی"
+            >
+
+            <button type="submit">
+                افزودن دسته‌بندی
+            </button>
+
+        </form>
+
+
+        <h3>افزودن حرکت</h3>
+
+        <form
+            id="exercise-form"
+            class="admin-form"
+        >
+
+            <input
+                type="text"
+                id="new-exercise-name"
+                placeholder="نام حرکت"
+            >
+
+            <select id="new-exercise-category">
+                <option value="">
+                    انتخاب دسته‌بندی
+                </option>
+            </select>
+
+            <button type="submit">
+                افزودن حرکت
+            </button>
+
+        </form>
+
+    </div>
+
+</div>
+
+
+<script>
+
+    let categories = [];
+    let exercises = [];
+
+    let currentCategoryId = null;
+    let currentExercises = [];
+
+    let numberOfDays = 2;
+    let currentDay = 1;
+
+    let supersetMode = false;
+    let supersetSelection = [];
+
+    let nextSupersetId = 1;
+
+
+    const workoutPlans = {
+        1: [],
+        2: [],
+        3: []
+    };
+
+
+    /*
+     * CSRF
+     */
+
+    function getCookie(name) {
+
+        let cookieValue = null;
+
+        if (document.cookie && document.cookie !== "") {
+
+            const cookies = document.cookie.split(";");
+
+            for (let cookie of cookies) {
+
+                cookie = cookie.trim();
+
+                if (cookie.startsWith(name + "=")) {
+
+                    cookieValue = decodeURIComponent(
+                        cookie.substring(name.length + 1)
+                    );
+
+                    break;
+                }
+            }
+        }
+
+        return cookieValue;
+    }
+
+
+    /*
+     * گرفتن دسته‌بندی‌ها
+     */
+
+    async function loadCategories() {
+
+        const response = await fetch(
+            "/api/categories/"
+        );
+
+        categories = await response.json();
+
+        renderCategories();
+        renderAdminCategories();
+    }
+
+
+    /*
+     * نمایش دسته‌بندی‌ها
+     */
+
+    function renderCategories() {
+
+        const container =
+            document.getElementById("categories");
+
+        container.innerHTML = "";
+
+        categories.forEach(category => {
+
+            const button =
+                document.createElement("button");
+
+            button.type = "button";
+
+            button.className = "category-btn";
+
+            button.textContent = category.name;
+
+            if (
+                String(category.id) ===
+                String(currentCategoryId)
+            ) {
+                button.classList.add("active");
+            }
+
+            button.addEventListener(
+                "click",
+                () => selectCategory(category.id)
+            );
+
+            container.appendChild(button);
+        });
+    }
+
+
+    /*
+     * انتخاب دسته‌بندی
+     */
+
+    async function selectCategory(categoryId) {
+
+        currentCategoryId = categoryId;
+
+        document
+            .getElementById("search-wrapper")
+            .style.display = "block";
+
+        document
+            .getElementById("exercise-search")
+            .value = "";
+
+        renderCategories();
+
+        const response = await fetch(
+            `/api/exercises/?category=${categoryId}`
+        );
+
+        currentExercises = await response.json();
+
+        renderExercises();
+    }
+
+
+    /*
+     * نمایش تمرین‌ها
+     */
+
+    function renderExercises() {
+
+        const container =
+            document.getElementById("exercise-list");
+
+        container.innerHTML = "";
+
+        const search =
+            document
+                .getElementById("exercise-search")
+                .value
+                .trim()
+                .toLowerCase();
+
+
+        const filteredExercises =
+            currentExercises.filter(exercise =>
+                exercise.name
+                    .toLowerCase()
+                    .includes(search)
+            );
+
+
+        if (filteredExercises.length === 0) {
+
+            container.innerHTML =
+                "<p>حرکتی پیدا نشد.</p>";
+
+            return;
+        }
+
+
+        filteredExercises.forEach(exercise => {
+
+            const row =
+                document.createElement("div");
+
+            row.className = "exercise-row";
+
+
+            const name =
+                document.createElement("span");
+
+            name.className = "exercise-name";
+
+            name.textContent = exercise.name;
+
+
+            const button =
+                document.createElement("button");
+
+            button.type = "button";
+
+            button.className =
+                "add-exercise-btn";
+
+            button.textContent = "+";
+
+
+            button.addEventListener(
+                "click",
+                () => handleExerciseClick(exercise)
+            );
+
+
+            row.appendChild(name);
+            row.appendChild(button);
+
+            container.appendChild(row);
+        });
+    }
+
+
+    /*
+     * کلیک روی حرکت
+     */
+
+    function handleExerciseClick(exercise) {
+
+        /*
+         * اگر در حالت سوپرست هستیم
+         */
+
+        if (supersetMode) {
+
+            /*
+             * اجازه انتخاب دوباره همان حرکت را نمی‌دهیم
+             */
+
+            if (
+                supersetSelection.some(
+                    item => item.id === exercise.id
+                )
+            ) {
+                return;
+            }
+
+
+            /*
+             * حرکت دوم
+             */
+
+            supersetSelection.push(exercise);
+
+
+            /*
+             * اگر دو حرکت انتخاب شده:
+             */
+
+            if (supersetSelection.length === 2) {
+
+                const supersetId =
+                    nextSupersetId++;
+
+
+                /*
+                 * حرکت اول
+                 */
+
+                workoutPlans[currentDay].push({
+
+                    id: supersetSelection[0].id,
+
+                    name: supersetSelection[0].name,
+
+                    sets: 3,
+
+                    reps: "",
+
+                    note: "",
+
+                    supersetId: supersetId
+                });
+
+
+                /*
+                 * حرکت دوم
+                 */
+
+                workoutPlans[currentDay].push({
+
+                    id: supersetSelection[1].id,
+
+                    name: supersetSelection[1].name,
+
+                    sets: 3,
+
+                    reps: "",
+
+                    note: "",
+
+                    supersetId: supersetId
+                });
+
+
+                /*
+                 * سوپرست تمام شد
+                 */
+
+                supersetSelection = [];
+
+                supersetMode = false;
+
+
+                document
+                    .getElementById("superset-btn")
+                    .classList.remove("active");
+
+
+                document
+                    .getElementById("superset-message")
+                    .textContent = "";
+
+
+                /*
+                 * هر دو حرکت را بلافاصله نمایش بده
+                 */
+
+                renderProgram();
+
+                updatePreview();
+
+                return;
+            }
+
+
+            /*
+             * هنوز حرکت دوم انتخاب نشده
+             */
+
+            renderExercises();
+
+            document
+                .getElementById("superset-message")
+                .textContent =
+                "حالا حرکت دوم سوپرست را انتخاب کن.";
+
+            return;
+        }
+
+
+        /*
+         * حالت عادی
+         */
+
+        workoutPlans[currentDay].push({
+
+            id: exercise.id,
+
+            name: exercise.name,
+
+            sets: 3,
+
+            reps: "",
+
+            note: "",
+
+            supersetId: null
+        });
+
+
+        renderProgram();
+
+        updatePreview();
+    }
+
+
+    /*
+     * ساخت برنامه
+     */
+
+    function renderProgram() {
+
+        const container =
+            document.getElementById("program-list");
+
+        container.innerHTML = "";
+
+
+        const exercises =
+            workoutPlans[currentDay];
+
+
+        if (exercises.length === 0) {
+
+            container.innerHTML =
+                "<p>هنوز تمرینی انتخاب نشده است.</p>";
+
+            return;
+        }
+
+
+        exercises.forEach((exercise, index) => {
+
+            const wrapper =
+                document.createElement("div");
+
+            wrapper.className =
+                "program-exercise";
+
+
+            /*
+             * بالای کارت
+             */
+
+            const top =
+                document.createElement("div");
+
+            top.className =
+                "program-exercise-top";
+
+
+            const name =
+                document.createElement("div");
+
+            name.className =
+                "program-exercise-name";
+
+
+            /*
+             * فقط برای سوپرست ستاره
+             */
+
+            const star =
+                exercise.supersetId
+                    ? "* "
+                    : "";
+
+
+            name.textContent =
+                star + exercise.name;
+
+
+            /*
+             * حذف
+             */
+
+            const removeButton =
+                document.createElement("button");
+
+            removeButton.type = "button";
+
+            removeButton.className =
+                "remove-exercise-btn";
+
+            removeButton.textContent =
+                "حذف";
+
+
+            removeButton.addEventListener(
+                "click",
+                () => {
+
+                    workoutPlans[currentDay]
+                        .splice(index, 1);
+
+                    renderProgram();
+
+                    updatePreview();
+                }
+            );
+
+
+            top.appendChild(name);
+
+            top.appendChild(removeButton);
+
+
+            /*
+             * ست و تکرار
+             */
+
+            const fields =
+                document.createElement("div");
+
+            fields.className =
+                "program-fields";
+
+
+            const setsInput =
+                document.createElement("input");
+
+            setsInput.type = "number";
+
+            setsInput.min = "1";
+
+            setsInput.placeholder = "تعداد ست";
+
+            setsInput.value =
+                exercise.sets ?? "";
+
+
+            const repsInput =
+                document.createElement("input");
+
+            repsInput.type = "text";
+
+            repsInput.placeholder =
+                "تکرار";
+
+            repsInput.value =
+                exercise.reps ?? "";
+
+
+            setsInput.addEventListener(
+                "input",
+                event => {
+
+                    exercise.sets =
+                        event.target.value;
+
+                    updatePreview();
+                }
+            );
+
+
+            repsInput.addEventListener(
+                "input",
+                event => {
+
+                    exercise.reps =
+                        event.target.value;
+
+                    updatePreview();
+                }
+            );
+
+
+            fields.appendChild(setsInput);
+            fields.appendChild(repsInput);
+
+
+            /*
+             * توضیحات
+             */
+
+            const noteInput =
+                document.createElement("input");
+
+            noteInput.type = "text";
+
+            noteInput.className =
+                "program-note";
+
+            noteInput.placeholder =
+                "توضیحات حرکت";
+
+            noteInput.value =
+                exercise.note ?? "";
+
+
+            noteInput.addEventListener(
+                "input",
+                event => {
+
+                    exercise.note =
+                        event.target.value;
+
+                    updatePreview();
+                }
+            );
+
+
+            wrapper.appendChild(top);
+
+            wrapper.appendChild(fields);
+
+            wrapper.appendChild(noteInput);
+
+
+            container.appendChild(wrapper);
+        });
+    }
+
+
+    /*
+     * ساخت پیش‌نمایش یک حرکت
+     */
+
+    function createPreviewExercise(exercise) {
+
+        const wrapper =
+            document.createElement("div");
+
+        wrapper.className =
+            "preview-exercise";
+
+
+        const name =
+            document.createElement("div");
+
+        name.className =
+            "preview-exercise-name";
+
+
+        const star =
+            exercise.supersetId
+                ? "* "
+                : "";
+
+
+        name.textContent =
+            star + exercise.name;
+
+
+        const details =
+            document.createElement("div");
+
+        details.className =
+            "preview-exercise-details";
+
+
+        const sets =
+            document.createElement("span");
+
+        sets.textContent =
+            `ست: ${exercise.sets || "—"}`;
+
+
+        const reps =
+            document.createElement("span");
+
+        reps.textContent =
+            `تکرار: ${exercise.reps || "—"}`;
+
+
+        const note =
+            document.createElement("span");
+
+        note.textContent =
+            exercise.note
+                ? exercise.note
+                : "بدون توضیح";
+
+
+        details.appendChild(sets);
+
+        details.appendChild(reps);
+
+        details.appendChild(note);
+
+
+        wrapper.appendChild(name);
+
+        wrapper.appendChild(details);
+
+
+        return wrapper;
+    }
+
+
+    /*
+     * بروزرسانی پیش‌نمایش
+     */
+
+    function updatePreview() {
+
+        const container =
+            document.getElementById(
+                "preview-content"
+            );
+
+        container.innerHTML = "";
+
+
+        for (
+            let day = 1;
+            day <= numberOfDays;
+            day++
+        ) {
+
+            const dayExercises =
+                workoutPlans[day];
+
+
+            const dayWrapper =
+                document.createElement("div");
+
+            dayWrapper.className =
+                "preview-day";
+
+
+            const title =
+                document.createElement("h3");
+
+            title.className =
+                "preview-day-title";
+
+            title.textContent =
+                `روز ${day}`;
+
+
+            dayWrapper.appendChild(title);
+
+
+            if (dayExercises.length === 0) {
+
+                const empty =
+                    document.createElement("p");
+
+                empty.textContent =
+                    "هنوز تمرینی انتخاب نشده است.";
+
+                dayWrapper.appendChild(empty);
+
+            } else {
+
+                dayExercises.forEach(exercise => {
+
+                    dayWrapper.appendChild(
+                        createPreviewExercise(exercise)
+                    );
+
+                });
+            }
+
+
+            container.appendChild(dayWrapper);
+        }
+    }
+
+
+    /*
+     * ساخت دکمه‌های روزها
+     */
+
+    function renderDayButtons() {
+
+        const container =
+            document.getElementById(
+                "day-buttons"
+            );
+
+        container.innerHTML = "";
+
+
+        for (
+            let day = 1;
+            day <= numberOfDays;
+            day++
+        ) {
+
+            const button =
+                document.createElement("button");
+
+            button.type = "button";
+
+            button.className =
+                "day-btn";
+
+
+            if (day === currentDay) {
+
+                button.classList.add("active");
+            }
+
+
+            button.textContent =
+                `روز ${day}`;
+
+
+            button.addEventListener(
+                "click",
+                () => {
+
+                    currentDay = day;
+
+                    renderDayButtons();
+
+                    renderProgram();
+                }
+            );
+
+
+            container.appendChild(button);
+        }
+    }
+
+
+    /*
+     * تغییر تعداد روزها
+     */
+
+    document
+        .getElementById("number-of-days")
+        .addEventListener(
+            "change",
+            event => {
+
+                numberOfDays =
+                    Number(event.target.value);
+
+
+                if (
+                    currentDay > numberOfDays
+                ) {
+                    currentDay = 1;
+                }
+
+
+                renderDayButtons();
+
+                renderProgram();
+
+                updatePreview();
+            }
+        );
+
+
+    /*
+     * جستجو
+     */
+
+    document
+        .getElementById("exercise-search")
+        .addEventListener(
+            "input",
+            renderExercises
+        );
+
+
+    /*
+     * فعال کردن حالت سوپرست
+     */
+
+    document
+        .getElementById("superset-btn")
+        .addEventListener(
+            "click",
+            () => {
+
+                supersetMode =
+                    !supersetMode;
+
+
+                supersetSelection = [];
+
+
+                const button =
+                    document.getElementById(
+                        "superset-btn"
+                    );
+
+                const message =
+                    document.getElementById(
+                        "superset-message"
+                    );
+
+
+                if (supersetMode) {
+
+                    button.classList.add("active");
+
+                    message.textContent =
+                        "حرکت اول سوپرست را انتخاب کن.";
+
+                } else {
+
+                    button.classList.remove("active");
+
+                    message.textContent = "";
+                }
+
+
+                renderExercises();
+            }
+        );
+
+
+    /*
+     * PDF
+     */
+
+    document
+        .getElementById("pdf-btn")
+        .addEventListener(
+            "click",
+            async () => {
+
+                const name =
+                    document
+                        .getElementById(
+                            "athlete-name"
+                        )
+                        .value
+                        .trim();
+
+
+                if (!name) {
+
+                    alert(
+                        "لطفاً نام ورزشکار را وارد کنید."
+                    );
+
+                    return;
+                }
+
+
+                const formData =
+                    new FormData();
+
+
+                formData.append(
+                    "name",
+                    name
+                );
+
+
+                formData.append(
+                    "number_of_days",
+                    numberOfDays
+                );
+
+
+                for (
+                    let day = 1;
+                    day <= numberOfDays;
+                    day++
+                ) {
+
+                    workoutPlans[day]
+                        .forEach(exercise => {
+
+                            const star =
+                                exercise.supersetId
+                                    ? "* "
+                                    : "";
+
+
+                            const exerciseText =
+                                `${star}${exercise.name} | ` +
+                                `${exercise.sets} ست | ` +
+                                `${exercise.reps || "—"}` +
+                                `${
+                                    exercise.note
+                                        ? " | " +
+                                          exercise.note
+                                        : ""
+                                }`;
+
+
+                            formData.append(
+                                `day_${day}[]`,
+                                exerciseText
+                            );
+
+                        });
+                }
+
+
+                const response =
+                    await fetch(
+                        "/api/generate-pdf/",
+                        {
+                            method: "POST",
+
+                            headers: {
+                                "X-CSRFToken":
+                                    getCookie("csrftoken")
+                            },
+
+                            body: formData
+                        }
+                    );
+
+
+                if (!response.ok) {
+
+                    alert(
+                        "خطا در ساخت PDF"
+                    );
+
+                    return;
+                }
+
+
+                const blob =
+                    await response.blob();
+
+
+                const url =
+                    window.URL.createObjectURL(blob);
+
+
+                const link =
+                    document.createElement("a");
+
+
+                link.href = url;
+
+                link.download =
+                    `${name}.pdf`;
+
+
+                document.body.appendChild(link);
+
+                link.click();
+
+                link.remove();
+
+                window.URL.revokeObjectURL(url);
+            }
+        );
+
+
+    /*
+     * افزودن دسته‌بندی
+     */
+
+    document
+        .getElementById("category-form")
+        .addEventListener(
+            "submit",
+            async event => {
+
+                event.preventDefault();
+
+
+                const name =
+                    document
+                        .getElementById(
+                            "new-category-name"
+                        )
+                        .value
+                        .trim();
+
+
+                if (!name) {
+                    return;
+                }
+
+
+                const response =
+                    await fetch(
+                        "/api/categories/create/",
+                        {
+                            method: "POST",
+
+                            headers: {
+                                "Content-Type":
+                                    "application/json",
+
+                                "X-CSRFToken":
+                                    getCookie("csrftoken")
+                            },
+
+                            body: JSON.stringify({
+                                name: name
+                            })
+                        }
+                    );
+
+
+                if (!response.ok) {
+
+                    alert(
+                        "خطا در افزودن دسته‌بندی"
+                    );
+
+                    return;
+                }
+
+
+                document
+                    .getElementById(
+                        "new-category-name"
+                    )
+                    .value = "";
+
+
+                await loadCategories();
+            }
+        );
+
+
+    /*
+     * نمایش دسته‌بندی‌ها در فرم مدیریت
+     */
+
+    function renderAdminCategories() {
+
+        const select =
+            document.getElementById(
+                "new-exercise-category"
+            );
+
+
+        select.innerHTML =
+            '<option value="">انتخاب دسته‌بندی</option>';
+
+
+        categories.forEach(category => {
+
+            const option =
+                document.createElement("option");
+
+            option.value =
+                category.id;
+
+            option.textContent =
+                category.name;
+
+
+            select.appendChild(option);
+        });
+    }
+
+
+    /*
+     * افزودن حرکت
+     */
+
+    document
+        .getElementById("exercise-form")
+        .addEventListener(
+            "submit",
+            async event => {
+
+                event.preventDefault();
+
+
+                const name =
+                    document
+                        .getElementById(
+                            "new-exercise-name"
+                        )
+                        .value
+                        .trim();
+
+
+                const category =
+                    document
+                        .getElementById(
+                            "new-exercise-category"
+                        )
+                        .value;
+
+
+                if (!name || !category) {
+
+                    alert(
+                        "نام حرکت و دسته‌بندی را وارد کنید."
+                    );
+
+                    return;
+                }
+
+
+                const response =
+                    await fetch(
+                        "/api/exercises/create/",
+                        {
+                            method: "POST",
+
+                            headers: {
+                                "Content-Type":
+                                    "application/json",
+
+                                "X-CSRFToken":
+                                    getCookie("csrftoken")
+                            },
+
+                            body: JSON.stringify({
+
+                                name: name,
+
+                                category: category
+
+                            })
+                        }
+                    );
+
+
+                if (!response.ok) {
+
+                    alert(
+                        "خطا در افزودن حرکت"
+                    );
+
+                    return;
+                }
+
+
+                document
+                    .getElementById(
+                        "new-exercise-name"
+                    )
+                    .value = "";
+
+
+                /*
+                 * اگر دسته فعلی همان دسته جدید بود،
+                 * لیست حرکات را دوباره بگیر
+                 */
+
+                if (
+                    String(currentCategoryId) ===
+                    String(category)
+                ) {
+
+                    await selectCategory(
+                        category
+                    );
+                }
+            }
+        );
+
+
+    /*
+     * شروع صفحه
+     */
+
+    async function init() {
+
+        renderDayButtons();
+
+        updatePreview();
+
+        await loadCategories();
+    }
+
+
+    init();
+
+</script>
+
+</body>
+</html>
