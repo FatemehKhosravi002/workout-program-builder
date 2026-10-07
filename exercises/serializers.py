@@ -3,9 +3,11 @@ from .models import Category, Exercise
 
 
 class CategorySerializer(serializers.ModelSerializer):
+    exercise_count = serializers.IntegerField(read_only=True)
+
     class Meta:
         model = Category
-        fields = ["id", "name"]
+        fields = ["id", "name", "exercise_count"]
 
 
 class ExerciseSerializer(serializers.ModelSerializer):

@@ -4,6 +4,7 @@ import os
 import arabic_reshaper
 from bidi.algorithm import get_display
 
+from django.db.models import Count
 from django.conf import settings
 from django.http import FileResponse, JsonResponse
 from django.shortcuts import render
@@ -26,8 +27,12 @@ def home(request):
 
 
 class CategoryListView(ListAPIView):
-    queryset = Category.objects.all()
     serializer_class = CategorySerializer
+
+    def get_queryset(self):
+        return Category.objects.annotate(
+            exercise_count=Count("exercises")
+        )
 
 
 class ExerciseListView(ListAPIView):
